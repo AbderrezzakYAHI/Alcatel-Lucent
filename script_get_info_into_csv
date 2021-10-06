@@ -25,7 +25,7 @@ for var in ["device_type", "host", "username", "password"]:
     device[var] = eval(var)
 
 device_connect = ConnectHandler(**device)
-Z1_CMD = device_connect.send_command('admin display-config | match PW context all | match sap')
+Z1_CMD = device_connect.send_command('admin display-config | match '<your expresion>' context all | match sap')
 Port_List_1= []
 for Port in Z1_CMD.split("\n"):
     if Port == "":
@@ -33,7 +33,7 @@ for Port in Z1_CMD.split("\n"):
     else:
         Port_List_1.append(Port.split(" ")[-2].split(":")[0])
 
-Arc_CMD = device_connect.send_command('admin display-config | match ARCTURUS context all | match sap')
+Arc_CMD = device_connect.send_command('admin display-config | match '<your expression>' context all | match sap')
 
 Port_List_2=[]
 for Port in Arc_CMD.split("\n"):
