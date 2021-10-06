@@ -1,4 +1,4 @@
-# Nokia
+# Alcatel Lucent
 The main goal of this script is to get information like : equipement_name, port, port status, wavelength,  AND save them into csv file 
 The first command send to search for any PW and list the résult into list.
 Then the other command send to search for any arcturus and sap if there is  match it will be save into list
