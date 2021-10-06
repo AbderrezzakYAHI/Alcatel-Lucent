@@ -1,0 +1,68 @@
+#!/usr/bin/python3
+# Author : Abderrezzak YAHI 
+from netmiko import ConnectHandler, NetMikoTimeoutException, NetMikoAuthenticationException
+import re
+import getpass
+
+print("""
+        ***********************       WARNING      **************************
+          You must have prior authorization to run this Script. All
+          connections are logged and monitored.By running this Script you
+          fully consent to all monitoring. Any failuere in the 
+          access or use will prosecuted to the  full extent of the law. 
+                      !!!!! You have been warned !!!!!!.
+
+       """)
+
+device = {}
+device_type = 'alcatel_sros'
+host = input("Please Enter name of your equipement hostname : ")
+print("you are going to log to: " + host)
+username = input("Please Enter your username: ")
+print("you are going to log as: " + username)
+password = getpass.getpass("Please enter your password: ")
+for var in ["device_type", "host", "username", "password"]:
+    device[var] = eval(var)
+
+device_connect = ConnectHandler(**device)
+Z1_CMD = device_connect.send_command('admin display-config | match PW context all | match sap')
+Port_List_1= []
+for Port in Z1_CMD.split("\n"):
+    if Port == "":
+        pass
+    else:
+        Port_List_1.append(Port.split(" ")[-2].split(":")[0])
+
+Arc_CMD = device_connect.send_command('admin display-config | match ARCTURUS context all | match sap')
+
+Port_List_2=[]
+for Port in Arc_CMD.split("\n"):
+    if Port == "":
+        pass
+    else:
+        Port_List_2.append(Port.split(" ")[-2].split(":")[0])
+Port_List=list(set(Port_List_1).union(Port_List_2))
+with open("check_host.csv","w") as filein:
+    filein.write("Hardware_Name;port;status;WaveLength"+"\n")
+    for port in Port_List:
+        desc= ""
+        wave = ""
+        oper_state = ""
+        admin_state = ""
+        CMD_Port_check= device_connect.send_command('show port '+port+' | match expression "Description|Oper|Admin|Wavel"')
+        if len(CMD_Port_check.split("\n"))>=5:
+            wave=CMD_Port_check.split("\n")[4].split(": ")[1].split(" ")[0]
+        else:
+            wave="lambda doesnot exist"
+        if CMD_Port_check.split("\n")[1].split(": ")[1].split(" ")[0]!=CMD_Port_check.split("\n")[2].split(": ")[1].split(" ")[0]:
+            filein.write(host+";"+str(port)+";down"+";"+wave+"\n")
+        else:    
+            filein.write(host+";"+str(port)+";up"+";"+wave+"\n")
+
+
+
+            
+
+
+
+
