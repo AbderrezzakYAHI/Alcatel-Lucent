@@ -1,13 +1,36 @@
-# Alcatel Lucent
-The main goal of this script is to get information like : equipement_name, port, port status, wavelength,  AND save them into csv file 
-The first command send to search for any PW and list the résult into list.
-Then the other command send to search for any sap if there is  match it will be save into list
-finaly check if the port is down it will return down if not it will return up 
-# requirement: 
+# Alcatel SR OS Port Check
 
-Python3 +
-# the final résult: 
-# Hardware_Name; port; status; WaveLength" \n
+This Python script uses **Netmiko** to connect to an **Alcatel/Nokia SR OS** device and check ports matching specific configuration expressions.
 
-Exemple: 
-Router1; 1/1/1; up; 1490nm
+## What it does
+
+- Connects to the equipment using SSH.
+- Searches the configuration for ports matching two defined expressions.
+- Removes duplicate ports.
+- Checks each port's **Admin** and **Oper** status.
+- Retrieves the **wavelength** when available.
+- Saves the results to `check_host.csv`.
+
+## Requirements
+
+```bash
+pip install netmiko
+```
+
+The script requires valid credentials and authorized access to the target equipment.
+
+## Output
+
+The results are saved as:
+
+```text
+check_host.csv
+```
+
+With the following format:
+
+```text
+Hardware_Name;port;status;WaveLength
+```
+
+The `<your expression>` placeholders in the script must be replaced with the configuration filters you want to check.
